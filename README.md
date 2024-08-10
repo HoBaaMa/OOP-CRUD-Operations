@@ -2,7 +2,7 @@
 
 ## Overview
 
-**CRUD Operations App** This application allows users to manage a list of users through basic CRUD operations (Create, Read, Update, Delete). Users can:
+**CRUD Operations App V1.1** This application allows users to manage a list of users through basic CRUD operations (Create, Read, Update, Delete). Users can:
  - Add: Create a new user by entering their full name, email address and phone number.
  - Read: View details of all users in the system.
  - Update: Modify the details of an existing user by seleting their phone number and updating their information.
@@ -202,6 +202,8 @@ Exiting Application...
 
 - Add more input validation.
 - Add search by email address feature.
+  -   <del>Update the user details by email address.</del> <b>V1.1</b>
+  -   Delete the user by email address.
 - Add Handling exceptions and errors more effectively.
 
 ---
