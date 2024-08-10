@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Drawing;
 using System.Formats.Asn1;
 using System.Linq;
@@ -10,13 +11,25 @@ namespace CRUD_Operations
 {
     internal class User
     {
-        private string? FullName { get; set; }
-        private string? Email { get; set; }
-        private string? PhoneNumber { get; set; }
+        private string? FullName
+        {
+            get;
+            set;
+        }
+        private string? Email
+        {
+            get;
+            set;
+        }
+        private string? PhoneNumber
+        {
+            get;
+            set;
+        }
 
         private static List<User> users = new List<User>();
 
-        public void StartApp ()
+        public void StartApp()
         {
             Console.WriteLine("Welcome to CRUD Operations Application!");
 
@@ -24,15 +37,18 @@ namespace CRUD_Operations
             while (runApp)
             {
                 Thread.Sleep(1500);
-                Console.WriteLine("\n══════════════════════════════════════════════════════════\n");
-                Console.WriteLine("1-Add User\n2-Update Data of User\n3-Delete User\n4-Print All Users\n5-Clear Console \n6-Exit");
-                Console.WriteLine("\n══════════════════════════════════════════════════════════\n");
+                Console.WriteLine(
+                    "\n══════════════════════════════════════════════════════════\n");
+                Console.WriteLine(
+                    "1-Add User\n2-Update Data of User\n3-Delete User\n4-Print All Users\n5-Clear Console \n6-Exit");
+                Console.WriteLine(
+                    "\n══════════════════════════════════════════════════════════\n");
 
                 Console.Write("Enter your choice: ");
                 ushort choice;
                 if (ushort.TryParse(Console.ReadLine(), out choice))
                 {
-                    switch (choice) 
+                    switch (choice)
                     {
                         case 1:
                             AddUser();
@@ -69,16 +85,13 @@ namespace CRUD_Operations
                     Console.WriteLine("Invalid input. Please enter a number.");
                     Console.ResetColor();
                 }
-                //Console.WriteLine("\nPress any key to continue...");
-                //Console.ReadKey();
-                //Console.Clear();
             }
-
         }
-        private void AddUser() 
+        private void AddUser()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\n══════════════════════════════════Add User══════════════════════════════════\n");
+            Console.WriteLine(
+                "\n══════════════════════════════════Add User══════════════════════════════════\n");
             Console.ResetColor();
             Console.Write("Please Enter Full-Name: ");
             string fullName = Console.ReadLine();
@@ -86,27 +99,22 @@ namespace CRUD_Operations
             Console.Write("Please Enter Email Address: ");
             string email = Console.ReadLine();
 
-
             Console.Write("Please Enter Phone Number: ");
             string phoneNumber = Console.ReadLine();
 
             // Create New User Object (User Creation)
-            User newUser = new User
-            {
-                FullName = fullName,
-                Email = email,
-                PhoneNumber = phoneNumber
-            };
+            User newUser =
+                new User { FullName = fullName, Email = email, PhoneNumber = phoneNumber };
             users.Add(newUser);
 
             // Change Console Text Color
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nUser Added Successfully!");
             // Reset Console Text Color to Default
-            Console.WriteLine("\n══════════════════════════════════New User Information════════════════════════\n");
+            Console.WriteLine(
+                "\n══════════════════════════════════New User Information════════════════════════\n");
             Console.ResetColor();
             DisplayUserInfo(newUser);
-
 
             /*
             *  Not Good Method to Add User!
@@ -114,77 +122,79 @@ namespace CRUD_Operations
             newUser.Email = email;
             newUser.PhoneNumber = phoneNumber; */
         }
-        private void UpdateUser() 
+        private void UpdateUser()
         {
-            // Checking if the users List is Empty at first!
-            if (users.Count == 0) { DisplayNoUsersFoundMessage(); return; };
-            
+            // Checking if the users List is Empty at first
+            if (users.Count == 0)
+            {
+                DisplayNoUsersFoundMessage();
+                return;
+            };
+
             // Updating User Data By Searching Phone Number
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("\n══════════════════════════════════Update User Data════════════════════════\n");
+            Console.WriteLine(
+                "\n══════════════════════════════════Update User Data════════════════════════\n");
             Console.ResetColor();
+            // let the user choose phone nuber or email
+            ushort userChoice;
+            Console.WriteLine("Update By:\n1-Phone Number\n2-Email Address");
 
-            Console.Write("Enter Phone Number to Update User Data: ");
-            string phoneNumber = Console.ReadLine();
-            User FoundedUser = FindUserByPhoneNumber(phoneNumber);
-            if (FoundedUser != null)
+            if (ushort.TryParse(Console.ReadLine(), out userChoice))
             {
-                ushort choice;
-                Console.WriteLine("1-Full Name\n2-Email\n3-Phone Number");
-                Console.Write("Please Choose Number to Update: ");
-                if (ushort.TryParse(Console.ReadLine(), out choice))
+                string userInput = null;
+                User foundedUser = null;
+                switch (userChoice)
                 {
-                    switch (choice)
-                    {
-                        case 1:
-                            Console.Write("Enter New Full Name: ");
-                            FoundedUser.FullName = Console.ReadLine();
-                            Console.WriteLine("Full Name updated successfully!");
-                            break;
-                        case 2:
-                            Console.Write("Enter New Email Address: ");
-                            FoundedUser.Email = Console.ReadLine();
-                            Console.WriteLine("Email Address updated successfully!");
-                            break;
-                        case 3:
-                            Console.Write("Enter New Phone Number: ");
-                            FoundedUser.PhoneNumber = Console.ReadLine();
-                            Console.WriteLine("Phone Number updated successfully!");
-                            break;
-                        default:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Invalid Choice!");
-                            Console.ResetColor();
-                            break;
-                    }
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("\n══════════════════════════════════User Updated Information════════════════════════\n");
-                    Console.ResetColor();
-                    DisplayUserInfo(FoundedUser);
+                    case 1:
+                        Console.Write("Enter Phone Number to Update User Data: ");
+                        userInput = Console.ReadLine();
+                        foundedUser = FindUserByPhoneNumber(userInput);
+                        break;
+                    case 2:
+                        Console.Write("Enter Email Address to Update User Data: ");
+                        userInput = Console.ReadLine();
+                        foundedUser = FindUserByEmailAddress(userInput);
+                        break;
 
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Invalid choice. Please select a valid option.");
+                        Console.ResetColor();
+                        return;
+                }
+                if (foundedUser != null)
+                {
+                    UpdateUserByContactInfo(foundedUser);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Invalid input. Please enter a number.");
+                    Console.WriteLine("User not found!");
                     Console.ResetColor();
                 }
             }
+
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("User not found!");
+                Console.WriteLine("Invalid input. Please enter a valid choice.");
                 Console.ResetColor();
             }
         }
 
-        private void DeleteUser() 
+        private void DeleteUser()
         {
-            if (users.Count == 0) { DisplayNoUsersFoundMessage(); return; };
+            if (users.Count == 0)
+            {
+                DisplayNoUsersFoundMessage();
+                return;
+            };
 
             // Deleting User By Phone Number
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("\n══════════════════════════════════Delete User══════════════════════════════════\n");
+            Console.WriteLine(
+                "\n══════════════════════════════════Delete User══════════════════════════════════\n");
             Console.ResetColor();
             Console.Write("Please enter the Phone Number of the user: ");
             string phoneNumber = Console.ReadLine();
@@ -203,15 +213,17 @@ namespace CRUD_Operations
             }
             Console.ResetColor();
         }
-        private void PrintAllUsers() 
+
+        private void PrintAllUsers()
         {
-            
-            if (users.Count !=0)
+
+            if (users.Count != 0)
             {
                 foreach (User user in users)
                 {
                     // Get User Index And Add 1 to it then display it
-                    Console.WriteLine("\n══════════════════════════════════════════════════════════\n");
+                    Console.WriteLine(
+                        "\n══════════════════════════════════════════════════════════\n");
                     Console.WriteLine($"User #{users.IndexOf(user) + 1}\n");
 
                     DisplayUserInfo(user);
@@ -220,13 +232,20 @@ namespace CRUD_Operations
                 }
             }
             // If users list is empty (count == 0) then display warning message
-            else { DisplayNoUsersFoundMessage(); return; };
-
-            
+            else
+            {
+                DisplayNoUsersFoundMessage();
+                return;
+            };
         }
+
         private User FindUserByPhoneNumber(string phoneNumber)
         {
             return users.FirstOrDefault(temp => temp.PhoneNumber == phoneNumber);
+        }
+        private User FindUserByEmailAddress(string emailAddress)
+        {
+            return users.FirstOrDefault(temp => temp.Email == emailAddress);
         }
         private void DisplayUserInfo(User user)
         {
@@ -239,6 +258,53 @@ namespace CRUD_Operations
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Warning: No Users Found!");
             Console.ResetColor();
+        }
+        private void UpdateUserByContactInfo(User contactInfo)
+        {
+            if (contactInfo != null)
+            {
+                ushort choice;
+                Console.WriteLine("\n1-Full Name\n2-Email\n3-Phone Number");
+                Console.Write("Please Choose Number to Update: ");
+                if (ushort.TryParse(Console.ReadLine(), out choice))
+                {
+                    switch (choice)
+                    {
+                        case 1:
+                            Console.Write("Enter New Full Name: ");
+                            contactInfo.FullName = Console.ReadLine();
+                            Console.WriteLine("Full Name updated successfully!");
+                            break;
+                        case 2:
+                            Console.Write("Enter New Email Address: ");
+                            contactInfo.Email = Console.ReadLine();
+                            Console.WriteLine("Email Address updated successfully!");
+                            break;
+                        case 3:
+                            Console.Write("Enter New Phone Number: ");
+                            contactInfo.PhoneNumber = Console.ReadLine();
+                            Console.WriteLine("Phone Number updated successfully!");
+                            break;
+                        default:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Invalid Choice!");
+                            Console.ResetColor();
+                            break;
+                    }
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(
+                        "\n══════════════════════════════════User Updated Information════════════════════════\n");
+                    Console.ResetColor();
+                    DisplayUserInfo(contactInfo);
+                }
+
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Please enter a number.");
+                Console.ResetColor();
+            }
         }
     }
 }
